@@ -24,12 +24,12 @@ You have two ways of running the game :
 - Use the precompiled executable in the __bin folder__
 - Compile the binaries yourself with the __cobc COBOL compiler__
 
-#### For running the precompiled executable
+#### -- For running the precompiled executable
 simply run the .exe file in the bin folder called __Higher-or-Lower.exe__
 
 Note That since it was compiled on a windows machine i dont know if th libraries ar compatible with Linux or Mac and will recommand compiling the binaries yourself
 
-#### For compiling the binaries yourself
+#### -- For compiling the binaries yourself
 To compile the binaries by yourself you will firstly need on of the two :
 
 - OpenCobolIDE ([Official download link](https://launchpad.net/cobcide/+download))
