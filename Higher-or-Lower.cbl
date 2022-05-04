@@ -24,22 +24,23 @@
        WORKING-STORAGE SECTION.
        01  WS-USERNAME PIC X(7).
        78  WS-NEW-LINE VALUE X"0D".
-       88  WS-RUN VALUE 1.
+       01  WS-RUN PIC 9 VALUE 1.
        01  WS-HIGH-SCORE PIC ZZ9.
        01  WS-ACTUAL-SCORE PIC ZZ9.
        01  WS-MENU-INPUT PIC X(20).
        01  WS-GAME-INPUT PIC X(20).
        01  WS-GAME-DIFFICULTY PIC 9.
+       01  WS-RANDOM-NB PIC ZZZ9.
       *-----------------------
        PROCEDURE DIVISION.
       *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
        MAIN-PROCEDURE.
            PERFORM GAME-INTRO.
-      *    PERFORM MAIN-GAME-LOOP UNTIL NOT WS-RUN.
+           PERFORM MAIN-GAME-LOOP UNTIL WS-RUN = 0.
            STOP RUN.
 
        GAME-INTRO.
-           SET WS-RUN TO TRUE
+           MOVE 1 TO WS-RUN.
            PERFORM DRAW-INTRO-SCREEN.
            DISPLAY WS-NEW-LINE.
            DISPLAY "Select your username (should be 7 letters or less)".
@@ -58,6 +59,7 @@
            DISPLAY "4 - Exit the game"
            PERFORM DRAW-GAME-BAR.
            PERFORM MENU-INPUT.
+           PERFORM GET-RANDOM-NUMBER.
 
        MENU-INPUT.
            ACCEPT WS-MENU-INPUT
@@ -77,8 +79,11 @@
                    PERFORM QUIT-GAME
                WHEN OTHER
                    DISPLAY "Invalid input please try again"
+                   PERFORM GET-RANDOM-NUMBER
+                   DISPLAY WS-RANDOM-NB
                    PERFORM MENU-INPUT
            END-EVALUATE.
+           PERFORM RESET-INPUTS.
 
        DRAW-GAME-BAR.
            DISPLAY
@@ -86,8 +91,12 @@
            .
 
        MAIN-GAME-LOOP.
+           PERFORM GAME-INPUT.
+           PERFORM RESET-INPUTS.
 
        GAME-INPUT.
+           DISPLAY "Guess the number !".
+           ACCEPT WS-GAME-INPUT.
 
        RESET-INPUTS.
            MOVE SPACES TO WS-MENU-INPUT.
@@ -95,6 +104,17 @@
 
        QUIT-GAME.
            STOP RUN.
+
+       GET-RANDOM-NUMBER.
+           EVALUATE WS-GAME-DIFFICULTY
+               WHEN 1
+                   COMPUTE WS-RANDOM-NB = FUNCTION RANDOM () * 10 + 1
+               WHEN 2
+                   COMPUTE WS-RANDOM-NB = FUNCTION RANDOM () * 100 + 1
+               WHEN 3
+                   COMPUTE WS-RANDOM-NB = FUNCTION RANDOM () * 1000 + 1
+           END-EVALUATE.
+
 
        DRAW-INTRO-SCREEN.
            DISPLAY
