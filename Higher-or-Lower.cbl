@@ -59,12 +59,12 @@
 
        INTRO-MENU.
            PERFORM DRAW-GAME-BAR.
-           MOVE WS-ACTUAL-SCORE TO WS-DISPLAY-SCORE
-           DISPLAY "Your Score :" WS-DISPLAY-SCORE
-           DISPLAY "1 - Difficulty 1 (0 to 10) grants 1 point"
-           DISPLAY "2 - Difficulty 2 (0 to 100) grants 5 point"
-           DISPLAY "3 - Difficulty 3 (0 to 1000) grants 10 point"
-           DISPLAY "4 - Exit the game"
+           MOVE WS-ACTUAL-SCORE TO WS-DISPLAY-SCORE.
+           DISPLAY "Your Score :" WS-DISPLAY-SCORE WS-NEW-LINE.
+           DISPLAY "1 - Difficulty 1 (0 to 10) grants 1 point".
+           DISPLAY "2 - Difficulty 2 (0 to 100) grants 5 point".
+           DISPLAY "3 - Difficulty 3 (0 to 1000) grants 10 point".
+           DISPLAY "4 - Exit the game".
            PERFORM DRAW-GAME-BAR.
            PERFORM MENU-INPUT.
            ACCEPT WS-SEED FROM TIME
@@ -89,6 +89,7 @@
                    DISPLAY "Invalid input please try again"
                    PERFORM MENU-INPUT
            END-EVALUATE.
+           DISPLAY "Type 'exit' to exit the game"
            PERFORM RESET-INPUTS.
 
        DRAW-GAME-BAR.
@@ -98,15 +99,14 @@
 
        MAIN-GAME-LOOP.
            PERFORM GAME-INPUT.
-           DISPLAY WS-RAND.
-           MOVE FUNCTION NUMVAL(WS-GAME-INPUT) TO WS-NB
+           MOVE FUNCTION NUMVAL(WS-GAME-INPUT) TO WS-NB.
            EVALUATE WS-GAME-INPUT
                WHEN "exit"
                    PERFORM QUIT-GAME
                WHEN OTHER
                    IF WS-IS-NB-FLAG = 1 THEN
                        IF WS-NB = WS-RAND THEN
-                           DISPLAY "you won" WS-NEW-LINE
+                           DISPLAY WS-NEW-LINE "you won" WS-NEW-LINE
                            EVALUATE WS-GAME-DIFFICULTY
                                WHEN 1
                                    ADD 1 TO WS-ACTUAL-SCORE
@@ -117,18 +117,21 @@
                            END-EVALUATE
                            PERFORM INTRO-MENU
                        ELSE IF WS-NB > WS-RAND THEN
-                           DISPLAY "LOWER"
+                           PERFORM DRAW-LOWER
+                           DISPLAY WS-NEW-LINE
                        ELSE
-                           DISPLAY "HIGHER"
+                           PERFORM DRAW-HIGHER
+                           DISPLAY WS-NEW-LINE
                        END-IF
                    ELSE
-                       DISPLAY "Invalid input please try again"
+                       DISPLAY WS-NEW-LINE
+                       "Invalid input please try again"
                    END-IF
            END-EVALUATE.
            PERFORM RESET-INPUTS.
 
        GAME-INPUT.
-           DISPLAY "Guess the number !".
+           DISPLAY WS-NEW-LINE "Guess the number !".
            ACCEPT WS-GAME-INPUT.
            INSPECT WS-GAME-INPUT REPLACING ALL WS-NEW-LINE BY SPACES.
            MOVE FUNCTION LOWER-CASE(WS-GAME-INPUT) TO WS-GAME-INPUT.
@@ -145,7 +148,8 @@
            MOVE 0 TO WS-IS-NB-FLAG.
 
        QUIT-GAME.
-           DISPLAY WS-NEW-LINE "Exiting the game"
+           DISPLAY WS-NEW-LINE "See you later " WS-USERNAME.
+           DISPLAY "Exiting the game".
            STOP RUN.
 
        GET-RANDOM-NUMBER.
@@ -158,8 +162,21 @@
                    COMPUTE WS-RAND = FUNCTION RANDOM(WS-SEED) * 1000 + 1
            END-EVALUATE.
 
+       DRAW-LOWER.
+           DISPLAY
+           " _         ____   __          __  ______   _____    ".
+           DISPLAY
+           "| |       / __ \  \ \        / / |  ____| |  __ \   ".
+           DISPLAY
+           "| |      | |  | |  \ \  /\  / /  | |__    | |__) |  ".
+           DISPLAY
+           "| |      | |  | |   \ \/  \/ /   |  __|   |  _  /   ".
+           DISPLAY
+           "| |____  | |__| |    \  /\  /    | |____  | | \ \   ".
+           DISPLAY
+           "|______|  \____/      \/  \/     |______| |_|  \_\  ".
 
-       DRAW-INTRO-SCREEN.
+       DRAW-HIGHER.
            DISPLAY
            " _    _   _____    _____   _    _   ______   _____  ".
            DISPLAY
@@ -172,6 +189,12 @@
            "| |  | |  _| |_  | |__| | | |  | | | |____  | | \ \ ".
            DISPLAY
            "|_|  |_| |_____|  \_____| |_|__|_| |______| |_|  \_\".
+
+
+       DRAW-INTRO-SCREEN.
+           PERFORM DRAW-HIGHER.
+           DISPLAY
+           "                   __     _____                     ".
            DISPLAY
            "                 / __ \  |  __ \                    ".
            DISPLAY
@@ -181,15 +204,6 @@
            DISPLAY
            "                | |__| | | | \ \                    ".
            DISPLAY
-           " _         ____  \____/  |_|  \_\ ______   _____    ".
-           DISPLAY
-           "| |       / __ \  \ \        / / |  ____| |  __ \   ".
-           DISPLAY
-           "| |      | |  | |  \ \  /\  / /  | |__    | |__) |  ".
-           DISPLAY
-           "| |      | |  | |   \ \/  \/ /   |  __|   |  _  /   ".
-           DISPLAY
-           "| |____  | |__| |    \  /\  /    | |____  | | \ \   ".
-           DISPLAY
-           "|______|  \____/      \/  \/     |______| |_|  \_\  ".
+           "                 \____/  |_|  \_\                   ".
+           PERFORM DRAW-LOWER.
        END PROGRAM HIGHER-OR-LOWER.
